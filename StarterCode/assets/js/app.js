@@ -23,34 +23,34 @@ var chartGroup = svg.append("g")
   .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
 // load csv
-d3.csv("data/data.csv", function(err,healthData){
-	if (err) throw err;
+d3.csv("data/data.csv", function(error,data){
+	if (error) throw error;
 
-	healthData.forEach(function(data){
-		data.poverty = +data.poverty;
-		data.healthcare = +data.healthcare;
-    });
+	data.forEach(function(d){
+		d.poverty = +d.poverty;
+		d.healthcare = +d.healthcare;
+  });
     
-    // Create scale 
-    var xLinearScale = d3.scaleLinear().range([0, chartWidth]);
-    var yLinearScale = d3.scaleLinear().range([chartHeight,0]);
+  // Create scale 
+  var xLinearScale = d3.scaleLinear().range([0, chartWidth]);
+  var yLinearScale = d3.scaleLinear().range([chartHeight,0]);
  
-    //Scale the domain.
-    xLinearScale.domain([0, d3.max(healthData, function(data){
-         return +data.poverty;
-    })]);
+  //Compute the domain
+  xLinearScale.domain([0, d3.max(data, function(d){
+         return +d.poverty;
+  })]);
  
-    yLinearScale.domain([0, d3.max(healthData,function(data){
-         return +data.healthcare;
-    })]);
+  yLinearScale.domain([0, d3.max(data,function(d){
+         return +d.healthcare;
+  })]);
 
 	// Create axis functions
-	var bottomAxis = d3.axisBottom(xLinearScale);
-	var leftAxis = d3.axisLeft(yLinearScale);    
+	d3.axisBottom(xLinearScale);
+	d3.axisLeft(yLinearScale);    
     
     //Create Circles
-	var circlesGroup = chartGroup.selectAll("circle")
-	  .data(healthData)
+	chartGroup.selectAll("circle")
+	  .data(data)
 	  .enter()
 	  .append("circle")
 	  .attr("cx", d => xLinearScale(d.poverty))
@@ -58,8 +58,8 @@ d3.csv("data/data.csv", function(err,healthData){
 	  .attr("r", "15")
       .attr("class", "stateCircle");
 
-    var circlesText =  chartGroup.selectAll("text")
-      .data(healthData)
+  chartGroup.selectAll("text")
+      .data(data)
       .enter()
       .append("text")
       .attr("x", d => xLinearScale(d.poverty))
